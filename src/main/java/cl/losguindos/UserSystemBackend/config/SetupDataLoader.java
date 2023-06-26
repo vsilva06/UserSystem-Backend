@@ -46,6 +46,7 @@ public class SetupDataLoader implements
         for(EPrivilege privilegeType : EPrivilege.values()){
             Privilege privilege = privilegeRepository.findByPrivName(privilegeType).orElse(null);
             if (privilege != null) continue;
+            privilege = new Privilege();
             privilege.setPrivName(privilegeType);
             adminPrivileges.add(privilege);
             privilegeRepository.save(privilege);
@@ -90,6 +91,7 @@ public class SetupDataLoader implements
     private Role createRoleIfNotFound(String name, Set<Privilege> adminPrivileges) {
         Role role = roleRepository.findByRoleName(name).orElse(null);
         if (role != null) return role;
+        role = new Role();
         role.setRoleName(name);
         role.setRolePrivileges(adminPrivileges);
         return roleRepository.save(role);
