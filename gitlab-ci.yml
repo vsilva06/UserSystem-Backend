@@ -1,0 +1,42 @@
+stages:
+  # - packaged
+  - pre-release
+  # - production
+
+variables:
+  DOCKER_DRIVER: overlay2
+  IMAGE_FILE_API: "usersystem-api.tar"
+  APPNAME_API: "usersystem"
+  APPNAME_PG: "postgres"
+  IMAGE_FILE_PG: "postgres.tar"
+
+
+    #packaged:
+    #  image: maven:3.8.5-openjdk-17
+    #  stage: packaged
+    #  only:
+    # - feature/ci_cd
+    #script:
+    #- mvn clean
+    #- mvn package -B
+    #artifacts:
+  #paths:
+  #  - target/*.jar
+
+pre-release:
+  stage: pre-release
+  image: docker/compose:1.29.2
+  services:
+    - docker:19.03.12-dind
+  script:
+    - docker-compose -f docker-compose.yml up --build -d
+    - docker save $APPNAME_API > $IMAGE_FILE_API
+    - docker save $APPNAME_PG > $IMAGE_FILE_PG
+  only:
+    #- feature/ci_cd
+    - develop
+  artifacts:
+    when: on_success
+    paths:
+      - $IMAGE_FILE_API
+      - $IMAGE_FILE_PG
