@@ -31,7 +31,7 @@ public class ManageUsersController {
     }
 
 
-    @PostMapping("/sing_up")
+    @PostMapping("/sing-up")
     public ResponseEntity<Account> createUser(@RequestBody AccountDTO account){
         return ResponseEntity.status(200).body(service.createUser(account).pulicAccount());
     }
