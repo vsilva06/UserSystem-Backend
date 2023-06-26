@@ -56,26 +56,7 @@ public class UserDetailsImpl implements UserDetails {
     this.accLastModifiedDate = accDate_update;
   }
 
-
-//  public UserDetailsImpl(Long accId, String accName, String accFirstName,
-//                         String accLastName, String accEmail, String accPass, boolean accEnabled,
-//                         boolean accTokenExpired, GrantedAuthority authorities, LocalDateTime accCreatedDate,
-//                         LocalDateTime accLastModifiedDate) {
-//    this.accId = accId;
-//    this.accName = accName;
-//    this.accFirstName = accFirstName;
-//    this.accLastName = accLastName;
-//    this.accEmail = accEmail;
-//    this.accPass = accPass;
-//    this.accEnabled = accEnabled;
-//    this.accTokenExpired = accTokenExpired;
-//    this.authorities = authorities;
-//    this.accCreatedDate = accCreatedDate;
-//    this.accLastModifiedDate = accLastModifiedDate;
-//  }
-
   public static UserDetailsImpl build(Account account) {
-//    GrantedAuthority authority = (GrantedAuthority) account.getAccRole();
     List<GrantedAuthority> authorities = account.getAccRoles().stream()
         .map(privilege -> new SimpleGrantedAuthority(privilege.getRoleName()))
         .collect(Collectors.toList());
@@ -103,8 +84,8 @@ public class UserDetailsImpl implements UserDetails {
     return accId;
   }
 
-  public String getEmail() {
-    return accEmail;
+  public String getAccName() {
+    return accName;
   }
 
   @Override
@@ -114,7 +95,7 @@ public class UserDetailsImpl implements UserDetails {
 
   @Override
   public String getUsername() {
-    return accName;
+    return accEmail;
   }
 
   @Override
@@ -144,6 +125,6 @@ public class UserDetailsImpl implements UserDetails {
     if (o == null || getClass() != o.getClass())
       return false;
     UserDetailsImpl user = (UserDetailsImpl) o;
-    return Objects.equals(accName, user.accId);
+    return Objects.equals(accId, user.accId);
   }
 }

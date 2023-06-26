@@ -1,5 +1,6 @@
 package cl.losguindos.UserSystemBackend.config;
 
+import cl.losguindos.UserSystemBackend.Utils.MyPasswordEncoder;
 import cl.losguindos.UserSystemBackend.model.*;
 import cl.losguindos.UserSystemBackend.repository.AccountRepository;
 import cl.losguindos.UserSystemBackend.repository.PrivilegeRepository;
@@ -10,10 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 
 @Component
 public class SetupDataLoader implements
@@ -29,89 +32,67 @@ public class SetupDataLoader implements
 
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    PasswordEncoder encoder;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (alreadySetup)
             return;
+        Set<Privilege> adminPrivileges = new HashSet<>();
 
-        for(ERole roletype : ERole.values()){
-            Role role = new Role();
-            role.setRoleName(roletype.name());
-            createRoleIfNotFound(role);
+        for(EPrivilege privilegeType : EPrivilege.values()){
+            Privilege privilege = privilegeRepository.findByPrivName(privilegeType).orElse(null);
+            if (privilege != null) continue;
+            privilege.setPrivName(privilegeType);
+            adminPrivileges.add(privilege);
+            privilegeRepository.save(privilege);
+        }
+        Role adminRole = createRoleIfNotFound(ERole.ROLE_ADMIN.name(), adminPrivileges);
+        adminPrivileges.removeIf(privilege -> privilege.getPrivName().equals(EPrivilege.DELETE_PRIVILEGE));
+        Role moderator = createRoleIfNotFound(ERole.ROLE_MODERATOR.name(), adminPrivileges);
+        adminPrivileges.removeIf(privilege -> privilege.getPrivName().equals(EPrivilege.UPDATE_PRIVILEGE));
+        Role user = createRoleIfNotFound(ERole.ROLE_USER.name(), adminPrivileges);
+
+
+        Account adminAccount = new Account();
+        Account moderatorAccount = new Account();
+        Account userAccount = new Account();
+        if (!accountRepository.findByAccEmail("v.silva06@ufromail.cl").isPresent()) {
+            buildAccount(adminAccount, "Admin", "v.silva06@ufromail.cl", "admin", Set.of(adminRole));
+            accountRepository.save(adminAccount);
+            logger.info("adminAccount: " + adminAccount.toString());
+        }
+        if (!accountRepository.findByAccEmail("moderator@moderator.com").isPresent()) {
+            buildAccount(moderatorAccount, "Moderator", "moderator@moderator.com", "moderator", Set.of(moderator));
+            accountRepository.save(moderatorAccount);
+            logger.info("moderatorAccount: " + moderatorAccount.toString());
+        }
+        if (!accountRepository.findByAccEmail("user@user.com").isPresent()) {
+            buildAccount(userAccount, "User", "user@user.com", "user", Set.of(user));
+            accountRepository.save(userAccount);
+            logger.info("userAccount: " + userAccount.toString());
         }
 
-
-
-
-
-//
-//        Role adminRole = new Role();
-//        adminRole.setRoleName(ERole.ROLE_ADMIN.name());
-//        for (Privilege privilege : Set.of(read, write, delete, update)) {
-//            adminRole.getRolePrivileges().add(privilege);
-//        }
-
-
-//        adminPrivileges.addAll((Collection<? extends Privilege>) privilegeRepository.findAll());
-//        Iterable<Privilege> moderatorPrivileges =(privilegeRepository.findAllById(Set.of(1L,2L,4L)));
-//        Iterable<Privilege> userPrivileges =(privilegeRepository.findAllById(Set.of(1L,2L)));
-//        Role adminRole = createRoleIfNotFound(ERole.ROLE_ADMIN.name(), adminPrivileges);
-////        createRoleIfNotFound(ERole.ROLE_MODERATOR.name(), moderatorPrivileges);
-//        createRoleIfNotFound(ERole.ROLE_USER.name(), userPrivileges);
-
-//        boolean isUserCreated = accountRepository.findByAccEmail("test@test.com").isPresent();
-//        System.out.println("isUserCreated: " + isUserCreated);
-//        if (isUserCreated)
-//            return;
-//        Account account = new Account();
-//        account.setAccEmail("test@test.com");
-//        account.setAccName("Administrador");
-//        account.setAccPass(MyPasswordEncoder.encode("admin"));
-//        account.setRoles(Collections.singleton(adminRole));
-//        accountRepository.save(account);
-//
-//        alreadySetup = true;
-//    }
-//
-//
-//    public Privilege createPrivilegeIfNotFound(EPrivilege name) {
-//        Privilege privilege = new Privilege();
-//        privilege.setPrivName(name);
-//        return privilegeRepository.save(privilege);
-//    }
-//
-//
+        alreadySetup = true;
+    }
+    private void buildAccount(Account account, String name, String email, String pass, Set<Role> roles){
+        account.setAccName(name);
+        account.setAccEmail(email);
+        account.setAccPass(encoder.encode(pass));
+        account.setAccRoles(roles);
 
     }
-    public void createRoleIfNotFound(Role role) {
-        Set<Privilege> adminPrivileges = new HashSet<>();
-        Privilege read = new Privilege();
-        read.setPrivName(EPrivilege.READ_PRIVILEGE);
-        Privilege write = new Privilege();
-        write.setPrivName(EPrivilege.WRITE_PRIVILEGE);
-        Privilege delete = new Privilege();
-        delete.setPrivName(EPrivilege.DELETE_PRIVILEGE);
-        Privilege update = new Privilege();
-        update.setPrivName(EPrivilege.UPDATE_PRIVILEGE);
-
-        adminPrivileges.add(read);
-        adminPrivileges.add(write);
-        adminPrivileges.add(delete);
-        adminPrivileges.add(update);
-
-        read.setPrivRole(role);
-        write.setPrivRole(role);
-        delete.setPrivRole(role);
-        update.setPrivRole(role);
 
 
-
+    private Role createRoleIfNotFound(String name, Set<Privilege> adminPrivileges) {
+        Role role = roleRepository.findByRoleName(name).orElse(null);
+        if (role != null) return role;
+        role.setRoleName(name);
         role.setRolePrivileges(adminPrivileges);
-
-        roleRepository.save(role);
+        return roleRepository.save(role);
     }
-
 
 }

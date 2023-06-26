@@ -1,9 +1,11 @@
 package cl.losguindos.UserSystemBackend.controller;
 
+import cl.losguindos.UserSystemBackend.Utils.JwtResponse;
 import cl.losguindos.UserSystemBackend.model.Account;
 import cl.losguindos.UserSystemBackend.model.dto.AccountDTO;
 import cl.losguindos.UserSystemBackend.service.ManageUsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +21,12 @@ public class ManageUsersController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AccountDTO loginRequest){
+    public ResponseEntity<ResponseEntity<JwtResponse>> login(@RequestBody AccountDTO loginRequest){
         try {
             return ResponseEntity.status(200).body(service.login(loginRequest));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(401).body("Error");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 

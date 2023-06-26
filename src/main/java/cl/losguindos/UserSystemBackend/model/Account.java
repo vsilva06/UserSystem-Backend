@@ -48,17 +48,14 @@ public class Account {
     @LastModifiedDate
     private LocalDateTime accLastModifiedDate = LocalDateTime.now();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "account_role",
+            joinColumns = @JoinColumn(name = "acc_Id"),
+            inverseJoinColumns = @JoinColumn(name = "role_Id")
+    )
     @EqualsAndHashCode.Exclude
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roleAccount", fetch = FetchType.EAGER)
-    private Set<Role> accRoles = new HashSet<Role>();
-//    @ManyToOne(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
-//    @JoinTable(
-//            name = "role_account",
-//            joinColumns = @JoinColumn(name = "acc_Id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_Id"))
-//    @EqualsAndHashCode.Exclude
-//    private Role accRole;
-
+    private Set<Role> accRoles;
 
     public Account pulicAccount(){
         return new Account(
@@ -90,5 +87,25 @@ public class Account {
                 this.accLastModifiedDate,
                 this.accRoles.stream().map(Role::toRole).collect(Collectors.toSet())
         );
+    }
+
+    public Account toadminAccount(){
+        return new Account(
+                this.accId,
+                this.accName,
+                this.accFirstName,
+                this.accLastName,
+                this.accEmail,
+                null,
+                this.accEnabled,
+                this.accTokenExpired,
+                this.accCreatedDate,
+                this.accLastModifiedDate,
+                this.accRoles.stream().map(Role::toRole).collect(Collectors.toSet())
+        );
+    }
+
+    public void setToken(String token) {
+
     }
 }

@@ -37,24 +37,27 @@ public class Hierarchy {
 //    }
 
     public boolean isCurrentAdmin() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName();
-//        try{
-//            Account account = repository.findByAccEmail(email).orElseThrow();
-//            Set<Role> roles = account.getAccRole();
-//            return roles.stream().anyMatch(role -> Objects.equals(role.getRoleName(), "ROLE_ADMIN"));
-//        }catch (Exception e){
-//            return false;
-//        }
-        return true;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        try{
+            Account account = repository.findByAccEmail(email).orElseThrow();
+            Set<Role> roles = account.getAccRoles();
+            return roles.stream().anyMatch(role -> Objects.equals(role.getRoleName(), "ROLE_ADMIN"));
+        }catch (Exception e){
+            return false;
+        }
     }
 
     public boolean isEdtingMe() {
-        return isCurrentAdmin();
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName();
-//        Optional<Account> user = repository.findByUsrEmail(email);
-//        return user.filter(usuario -> Objects.equals(usuario.getAccEmail(), accountBody.getAccEmail())).isPresent();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        try{
+            Account account = repository.findByAccEmail(email).orElseThrow();
+            Set<Role> roles = account.getAccRoles();
+            return roles.stream().anyMatch(role -> Objects.equals(role.getRoleName(), "ROLE_ADMIN") || Objects.equals(role.getRoleName(), "ROLE_MANAGER"));
+        }catch (Exception e){
+            return false;
+        }
     }
 }
 

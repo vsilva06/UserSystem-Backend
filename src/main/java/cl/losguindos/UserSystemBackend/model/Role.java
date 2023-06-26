@@ -24,20 +24,16 @@ public class Role {
 
     private String roleName;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
-    @JoinTable(
-            name = "role_account",
-            joinColumns = @JoinColumn(name = "role_Id"),
-            inverseJoinColumns = @JoinColumn(name = "acc_Id"))
+    @ManyToMany(mappedBy = "accRoles")
     @EqualsAndHashCode.Exclude
-    private Account roleAccount;
-//
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "accRole", fetch = FetchType.EAGER)
-//    @EqualsAndHashCode.Exclude
-//    private Set<Account> roleAccounts;
+    private Set<Account> roleAccounts;
 
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "privRole", fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable(
+            name = "role_privilege",
+            joinColumns = @JoinColumn(name = "role_Id"),
+            inverseJoinColumns = @JoinColumn(name = "privilege_Id")
+    )
     @EqualsAndHashCode.Exclude
     private Set<Privilege> rolePrivileges;
 

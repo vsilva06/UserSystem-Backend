@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 
 @Entity
 @AllArgsConstructor
@@ -21,13 +23,9 @@ public class Privilege {
     @Enumerated(EnumType.STRING)
     private EPrivilege privName;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade =CascadeType.PERSIST)
-    @JoinTable(
-            name = "role_privileges",
-            joinColumns = @JoinColumn(name = "priv_Id"),
-            inverseJoinColumns = @JoinColumn(name = "role_Id"))
+    @ManyToMany(mappedBy = "rolePrivileges")
     @EqualsAndHashCode.Exclude
-    private Role privRole;
+    private Set<Role> privRoles;
 
     public Privilege toPrivilege(){
         return new Privilege(
