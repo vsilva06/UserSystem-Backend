@@ -70,7 +70,8 @@ public class SecurityConfig implements WebMvcConfigurer {
 //    @Bean
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
+        registry.addMapping("/**" +
+                        "")
                 .allowedOrigins("http://localhost:5173") // Replace with your React frontend URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");

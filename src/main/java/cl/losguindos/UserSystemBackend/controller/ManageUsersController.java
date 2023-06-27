@@ -32,7 +32,13 @@ public class ManageUsersController {
 
 
     @PostMapping("/sing-up")
-    public ResponseEntity<Account> createUser(@RequestBody AccountDTO account){
-        return ResponseEntity.status(200).body(service.createUser(account).pulicAccount());
+    public ResponseEntity<ResponseEntity<JwtResponse>> createUser(@RequestBody AccountDTO account){
+        try {
+            return ResponseEntity.status(200).body(service.createUser(account));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
     }
 }
