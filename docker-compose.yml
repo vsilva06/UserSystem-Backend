@@ -10,7 +10,7 @@ services:
       - .:/tmp
       - ~/.m2:/root/.m2      #to use with installed maven package
     ports:
-      - 8080:8080
+      - 4000:4000
     command: mvn spring-boot:run -Dspring.profiles.active=postgres,configs
     depends_on:
       - dbpostgresql

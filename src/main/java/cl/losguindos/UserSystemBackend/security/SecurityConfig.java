@@ -59,7 +59,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers(AUTH_WHITE_LIST).permitAll()
                                 .anyRequest().authenticated()
                 );
-        http.cors();
         http.headers().frameOptions().disable();
         http.authenticationProvider(authenticationProvider());
 
@@ -71,8 +70,9 @@ public class SecurityConfig implements WebMvcConfigurer {
 //    @Bean
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8000") // Replace with your React frontend URL
+        registry.addMapping("/**" +
+                        "")
+                .allowedOrigins("http://200.13.4.226:3000") // Replace with your React frontend URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
     }
