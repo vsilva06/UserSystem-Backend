@@ -1,19 +1,14 @@
 package cl.losguindos.UserSystemBackend.service;
 
-import cl.losguindos.UserSystemBackend.Utils.CustomResponse;
-import cl.losguindos.UserSystemBackend.Utils.MyPasswordEncoder;
 import cl.losguindos.UserSystemBackend.model.Account;
 import cl.losguindos.UserSystemBackend.model.AuxUserPass;
-import cl.losguindos.UserSystemBackend.model.Email;
 import cl.losguindos.UserSystemBackend.model.dto.AccountDTO;
 import cl.losguindos.UserSystemBackend.model.dto.UpdatePassRequest;
 import cl.losguindos.UserSystemBackend.repository.AccountRepository;
 import cl.losguindos.UserSystemBackend.repository.AuxUserPassRepository;
-import cl.losguindos.UserSystemBackend.security.jwt.JwtUtil;
+import cl.losguindos.UserSystemBackend.utils.CustomResponse;
+import cl.losguindos.UserSystemBackend.utils.MyPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;

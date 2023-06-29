@@ -1,9 +1,8 @@
 package cl.losguindos.UserSystemBackend.controller;
 
-import cl.losguindos.UserSystemBackend.Utils.JwtResponse;
-import cl.losguindos.UserSystemBackend.model.Account;
 import cl.losguindos.UserSystemBackend.model.dto.AccountDTO;
 import cl.losguindos.UserSystemBackend.service.ManageUsersService;
+import cl.losguindos.UserSystemBackend.utils.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

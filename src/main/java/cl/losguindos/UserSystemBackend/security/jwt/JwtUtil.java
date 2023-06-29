@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-
-// TODO: 17-05-2023 Cambiar a spanish
 @Component
 public class JwtUtil {
 

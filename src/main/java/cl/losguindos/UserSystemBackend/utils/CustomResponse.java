@@ -1,4 +1,4 @@
-package cl.losguindos.UserSystemBackend.Utils;
+package cl.losguindos.UserSystemBackend.utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +13,7 @@ public class CustomResponse {
             jsonResponse.put("Message", message);
             return jsonResponse.toString();
         } catch (JSONException e) {
-            throw new RuntimeException("Internal server error");
+            throw new RuntimeException("Error to generate response");
         }
     }
 
@@ -23,7 +23,7 @@ public class CustomResponse {
             jsonResponse.put("token", "Bearer "+token);
             return jsonResponse.toString();
         } catch (JSONException e) {
-            throw new RuntimeException("Internal server error");
+            throw new RuntimeException("Error to generate response");
         }
     }
 }

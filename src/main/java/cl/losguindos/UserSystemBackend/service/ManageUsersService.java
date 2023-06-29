@@ -1,31 +1,29 @@
 package cl.losguindos.UserSystemBackend.service;
 
-import cl.losguindos.UserSystemBackend.Utils.JwtResponse;
-import cl.losguindos.UserSystemBackend.Utils.MyPasswordEncoder;
 import cl.losguindos.UserSystemBackend.model.Account;
 import cl.losguindos.UserSystemBackend.model.ERole;
 import cl.losguindos.UserSystemBackend.model.dto.AccountDTO;
 import cl.losguindos.UserSystemBackend.repository.AccountRepository;
 import cl.losguindos.UserSystemBackend.repository.RoleRepository;
-import cl.losguindos.UserSystemBackend.security.jwt.AuthTokenFilter;
 import cl.losguindos.UserSystemBackend.security.jwt.JwtUtil;
 import cl.losguindos.UserSystemBackend.security.service.UserDetailsImpl;
+import cl.losguindos.UserSystemBackend.utils.JwtResponse;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,8 +40,6 @@ public class ManageUsersService {
     PasswordEncoder encoder;
     @Autowired
     JwtUtil jwtUtil;
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     public ResponseEntity<JwtResponse> login(AccountDTO loginRequest) throws JSONException {
         Authentication authentication = authenticationManager.authenticate(
@@ -74,7 +70,7 @@ public class ManageUsersService {
         String jwt = jwtUtil.generateToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),

@@ -15,27 +15,6 @@ import java.util.Set;
 public class Hierarchy {
     @Autowired
     private AccountRepository repository;
-
-//    public boolean validateRoles(Account accountBody) throws JSONException {
-//        Role prerol = accountBody.getAccRoles();
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName();
-//        Optional<Account> user = repository.findByUsrEmail(email);
-////        return true;
-//        if (user.isEmpty()) {
-//            return false;
-//        }
-//        if (Objects.equals(user.get().getAccEmail(), accountBody.getAccEmail())) {
-//            return true;
-//        }
-//        Role rol = user.get().getAccRoles();
-//        if (Objects.equals(rol.getRoleName(), "ROLE_ADMIN")) {
-//            return true;
-//        } else if (Objects.equals(prerol.getRoleName(), "ROLE_MANAGER") && Objects.equals(rol.getRoleName(), "ROLE_ADMIN")) {
-//            return true;
-//        } else return Objects.equals(prerol.getRoleName(), "ROLE_EXECUTIVE") && (Objects.equals(rol.getRoleName(), "ROLE_ADMIN") || Objects.equals(rol.getRoleName(), "ROLE_MANAGER")) ;
-//    }
-
     public boolean isCurrentAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();

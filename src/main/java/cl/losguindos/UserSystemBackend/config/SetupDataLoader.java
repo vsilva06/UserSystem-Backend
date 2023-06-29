@@ -1,11 +1,9 @@
 package cl.losguindos.UserSystemBackend.config;
 
-import cl.losguindos.UserSystemBackend.Utils.MyPasswordEncoder;
 import cl.losguindos.UserSystemBackend.model.*;
 import cl.losguindos.UserSystemBackend.repository.AccountRepository;
 import cl.losguindos.UserSystemBackend.repository.PrivilegeRepository;
 import cl.losguindos.UserSystemBackend.repository.RoleRepository;
-import cl.losguindos.UserSystemBackend.security.jwt.AuthTokenFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BinaryOperator;
 
 @Component
 public class SetupDataLoader implements
@@ -35,7 +32,7 @@ public class SetupDataLoader implements
     @Autowired
     PasswordEncoder encoder;
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(SetupDataLoader.class);
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -61,20 +58,20 @@ public class SetupDataLoader implements
         Account adminAccount = new Account();
         Account moderatorAccount = new Account();
         Account userAccount = new Account();
-        if (!accountRepository.findByAccEmail("v.silva06@ufromail.cl").isPresent()) {
+        if (accountRepository.findByAccEmail("v.silva06@ufromail.cl").isEmpty()) {
             buildAccount(adminAccount, "Admin", "v.silva06@ufromail.cl", "admin", Set.of(adminRole));
             accountRepository.save(adminAccount);
-            logger.info("adminAccount: " + adminAccount.toString());
+            logger.info("Admin created {}", adminAccount);
         }
-        if (!accountRepository.findByAccEmail("moderator@moderator.com").isPresent()) {
+        if (accountRepository.findByAccEmail("moderator@moderator.com").isEmpty()) {
             buildAccount(moderatorAccount, "Moderator", "moderator@moderator.com", "moderator", Set.of(moderator));
             accountRepository.save(moderatorAccount);
-            logger.info("moderatorAccount: " + moderatorAccount.toString());
+            logger.info("Moderator created {}", moderatorAccount);
         }
-        if (!accountRepository.findByAccEmail("user@user.com").isPresent()) {
+        if (accountRepository.findByAccEmail("user@user.com").isEmpty()) {
             buildAccount(userAccount, "User", "user@user.com", "user", Set.of(user));
             accountRepository.save(userAccount);
-            logger.info("userAccount: " + userAccount.toString());
+            logger.info("User created {}", userAccount);
         }
 
         alreadySetup = true;

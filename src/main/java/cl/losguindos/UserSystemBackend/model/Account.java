@@ -5,15 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyCollection;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,7 +33,7 @@ public class Account {
 
     private String accPass;
 
-    private boolean accEnabled =true;
+    private boolean accEnabled = true;
 
     private boolean accTokenExpired;
 
@@ -57,7 +52,7 @@ public class Account {
     @EqualsAndHashCode.Exclude
     private Set<Role> accRoles;
 
-    public Account pulicAccount(){
+    public Account pulicAccount() {
         return new Account(
                 this.accId,
                 this.accName,
@@ -73,7 +68,7 @@ public class Account {
         );
     }
 
-    public Account privateAccount(){
+    public Account privateAccount() {
         return new Account(
                 this.accId,
                 this.accName,
@@ -89,7 +84,7 @@ public class Account {
         );
     }
 
-    public Account toadminAccount(){
+    public Account toadminAccount() {
         return new Account(
                 this.accId,
                 this.accName,
@@ -105,7 +100,4 @@ public class Account {
         );
     }
 
-    public void setToken(String token) {
-
-    }
 }

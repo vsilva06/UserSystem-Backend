@@ -8,10 +8,10 @@ import cl.losguindos.UserSystemBackend.repository.AuxUserPassRepository;
 import cl.losguindos.UserSystemBackend.security.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.mail.javamail.JavaMailSender;
 
 @Service
 public class EmailService {
@@ -52,14 +52,14 @@ public class EmailService {
 
         auxUserPassRepository.save(auxUserPass);
         String link = "http://localhost:8080/user/password/recovery" + token;
-        email.setEmail_to(currentAccount.getAccEmail());
-        email.setEmail_subject("Password recovery");
-        email.setEmail_body("Hello " + currentAccount.getAccName() + " " + currentAccount.getAccFirstName() + " To recover your password, go to the following link:" + link);
+        email.setEmailTo(currentAccount.getAccEmail());
+        email.setEmailSubject("Password recovery");
+        email.setEmailBody("Hello " + currentAccount.getAccName() + " " + currentAccount.getAccFirstName() + " To recover your password, go to the following link:" + link);
 
         SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setTo(email.getEmail_to());
-        mensaje.setSubject(email.getEmail_subject());
-        mensaje.setText(email.getEmail_body());
+        mensaje.setTo(email.getEmailTo());
+        mensaje.setSubject(email.getEmailSubject());
+        mensaje.setText(email.getEmailBody());
         javaMailSender.send(mensaje);
     }
 }

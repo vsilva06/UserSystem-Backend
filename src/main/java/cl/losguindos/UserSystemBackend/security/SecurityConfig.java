@@ -15,9 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -25,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig implements WebMvcConfigurer {
     @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
@@ -41,16 +41,6 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-//        return http.csrf().disable().
-//                authorizeHttpRequests(auth -> auth.requestMatchers(AUTH_WHITE_LIST)
-//                        .permitAll()
-//                        .anyRequest()
-//                        .authenticated())
-//                .headers()
-//                .frameOptions()
-//                .disable()
-//                .and()
-//                .build();
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -59,6 +49,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers(AUTH_WHITE_LIST).permitAll()
                                 .anyRequest().authenticated()
                 );
+        http.cors();
         http.headers().frameOptions().disable();
         http.authenticationProvider(authenticationProvider());
 
@@ -66,12 +57,9 @@ public class SecurityConfig implements WebMvcConfigurer {
 
         return http.build();
     }
-//
-//    @Bean
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**" +
-                        "")
+        registry.addMapping("/**")
                 .allowedOrigins("http://200.13.4.226:8000") // Replace with your React frontend URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
