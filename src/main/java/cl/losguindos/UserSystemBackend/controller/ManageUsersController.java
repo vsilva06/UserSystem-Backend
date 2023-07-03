@@ -35,8 +35,7 @@ public class ManageUsersController {
         try {
             return ResponseEntity.status(200).body(service.createUser(account));
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
     }

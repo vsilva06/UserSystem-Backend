@@ -1,7 +1,6 @@
 package cl.losguindos.UserSystemBackend.service;
 
 import cl.losguindos.UserSystemBackend.model.Account;
-import cl.losguindos.UserSystemBackend.model.ERole;
 import cl.losguindos.UserSystemBackend.model.dto.AccountDTO;
 import cl.losguindos.UserSystemBackend.repository.AccountRepository;
 import cl.losguindos.UserSystemBackend.repository.RoleRepository;
@@ -90,7 +89,7 @@ public class ManageUsersService {
         newAccount.setAccLastName(account.getAccLastName());
         newAccount.setAccEmail(account.getAccEmail().toLowerCase());
         newAccount.setAccPass(encoder.encode(account.getAccPass()));
-        newAccount.setAccRoles(Set.of(roleRepository.findByRoleName(ERole.ROLE_USER.name()).orElse(null)));
+        newAccount.setAccRoles(Set.of(roleRepository.findByRoleName(account.getRole()).orElseThrow(() -> new RuntimeException("Error: Role is not found."))));
     }
 
     private boolean verifyPass(String accPass, String accPass1) {
